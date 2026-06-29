@@ -1,0 +1,97 @@
+<h1>CATÁLOGO DE FILMES</h1>
+
+<input type="text" placeholder="Digite o título" id="titulo">
+<input type="text" placeholder="Digite o gênero" id="genero">
+
+<button onclick="cadastrar()">Cadastrar</button>
+<button onclick="visualizar()">Visualizar</button>
+
+<div id="lista"></div>
+
+<script>
+
+let filmes = JSON.parse(localStorage.getItem("filmes")) || []
+
+function cadastrar(){
+
+    let titulo = document.getElementById("titulo").value
+    let genero = document.getElementById("genero").value
+
+    let filme = {
+        titulo,
+        genero
+    }
+
+    let existe = false
+
+    filmes.forEach((item)=>{
+        if(titulo == item.titulo){
+            existe = true
+        }
+    })
+
+    if(existe){
+        alert("Filme já cadastrado")
+    }else{
+        filmes.push(filme)
+        localStorage.setItem("filmes", JSON.stringify(filmes))
+        visualizar()
+    }
+
+}
+
+function visualizar(){
+
+    let lista = document.getElementById("lista")
+
+    lista.innerHTML = ""
+
+    filmes.forEach((item,i)=>{
+
+        lista.innerHTML += `
+        Título: ${item.titulo}<br>
+        Gênero: ${item.genero}<br>
+
+        <button onclick="editar(${i})">Editar</button>
+        <button onclick="deletar(${i})">Excluir</button>
+
+        <br><br>
+        `
+
+    })
+
+}
+
+function editar(i){
+
+    let novoTitulo = prompt("Novo título", filmes[i].titulo)
+    let novoGenero = prompt("Novo gênero", filmes[i].genero)
+
+    if(novoTitulo){
+
+        filmes[i].titulo = novoTitulo
+        filmes[i].genero = novoGenero
+
+        visualizar()
+
+        localStorage.setItem("filmes", JSON.stringify(filmes))
+
+    }
+
+}
+
+function deletar(i){
+
+    alert("Filme removido!")
+
+    filmes.splice(i,1)
+
+    visualizar()
+
+    localStorage.setItem("filmes", JSON.stringify(filmes))
+
+}
+
+visualizar()
+
+</script>
